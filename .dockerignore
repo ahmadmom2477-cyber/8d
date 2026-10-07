@@ -1,0 +1,5 @@
+*.mp3
+*.wav
+__pycache__
+.git
+.venv

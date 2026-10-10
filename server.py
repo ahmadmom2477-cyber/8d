@@ -37,7 +37,10 @@ def process_audio(source: Path, output: Path, speed: float, depth: float, echo: 
 
 def download_youtube(url: str, template: str):
     executable = shutil.which("yt-dlp")
-    command = [executable, "--no-playlist", "-f", "bestaudio/best", "-o", template, url] if executable else [sys.executable, "-m", "yt_dlp", "--no-playlist", "-f", "bestaudio/best", "-o", template, url]
+    # YouTube increasingly serves SABR-only formats to the default client.
+    # Android + web gives yt-dlp a downloadable fallback on headless hosts.
+    base = ["--no-playlist", "--no-update", "--extractor-args", "youtube:player_client=android,web", "-f", "bestaudio[ext=m4a]/bestaudio/best", "-o", template, url]
+    command = [executable, *base] if executable else [sys.executable, "-m", "yt_dlp", *base]
     run(command)
 
 class Handler(BaseHTTPRequestHandler):
